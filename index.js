@@ -1,7 +1,7 @@
 
 const discord = require('discord.js');
 const { join } = require('path');
-const token="ODg4NTA3NTI4MDc2NDYwMDQz.YUTtHg.ozyANh0ou-OH9zH8V6ESMMftQgI";
+const token="ODg4NTA3NTI4MDc2NDYwMDQz.YUTtHg.iuS8xtXraf9Brx-WOTQbvqx0lGg";
 const intents = new discord.Intents(4737);
 const ytdl = require('ytdl-core');
 const client = new discord.Client({ intents });
