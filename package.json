@@ -1,0 +1,22 @@
+{
+  "requires": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": "16.x"
+  },
+  "name": "discord-bot",
+  "version": "1.0.0",
+  "description": "music bot for discord",
+  "main": "index.js",
+  "dependencies": {
+    "@discordjs/voice": "^0.7.5",
+    "discord.js": "^13.5.0",
+    "youtube-search-api": "^1.0.11",
+    "ytdl-core": "^4.9.2"
+  },
+  "devDependencies": {},
+  "author": "me",
+  "license": "UNLICENSED"
+}
