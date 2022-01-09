@@ -13,6 +13,7 @@
   "dependencies": {
     "@discordjs/voice": "^0.7.5",
     "discord.js": "^13.5.0",
+    "ffmpeg-static": "^4.4.1",
     "youtube-search-api": "^1.0.11",
     "ytdl-core": "^4.9.2"
   },
