@@ -18,29 +18,28 @@ client.on('ready', () => {
 
 client.on("messageCreate", async (msg)=>{
     console.log("Message received from, msg: "+msg.content)
-    console.log("Server: "+msg.guild.name)
+    console.log("Server: "+msg.guild.player.name)
     if (msg.content[0]=="$"){
-        if(msg.guild.songqueue === undefined){
-            msg.guild.songqueue=[]
-            msg.guild.songtitlequeue=[]
-            msg.guild.currentsong=0
-            msg.guild.playerstate=false
-            msg.guild.loopq=false
+        if(msg.guild.player.songqueue === undefined){
             msg.guild.player = createAudioPlayer()
+            msg.guild.player.songqueue=[]
+            msg.guild.player.songtitlequeue=[]
+            msg.guild.player.currentsong=0
+            msg.guild.player.playerstate=false
+            msg.guild.player.loopq=false
             
             msg.guild.player.on(AudioPlayerStatus.Idle, () => {
-                if(msg.guild.playerstate){
-                    if ((msg.guild.currentsong+1)<msg.guild.songqueue.length){
-                        msg.guild.currentsong++
-                        playAudio(msg.guild.songqueue[msg.guild.currentsong])
+                if(this.playerstate){
+                    if ((this.currentsong+1)<this.songqueue.length){
+                        this.currentsong++
+                        playAudio(this.songqueue[this.currentsong])
                     }else{
-                        if(msg.guild.loopq){
-                            msg.guild.currentsong=0
-                            playAudio(msg.guild.songqueue[msg.guild.currentsong])
-                            msg.reply("Playing: "+msg.guild.songtitlequeue[msg.guild.currentsong])
+                        if(this.loopq){
+                            this.currentsong=0
+                            playAudio(this.songqueue[this.currentsong])
                         }else{
-                            msg.guild.currentsong++
-                            msg.guild.playerstate=false
+                            this.currentsong++
+                            this.playerstate=false
                         }
                     }
                 }
@@ -73,8 +72,8 @@ client.on("messageCreate", async (msg)=>{
                 }
                 conn=joinVoiceChannel({
                     channelId: msg.member.voice.channel.id,
-                    guildId: msg.guild.id,
-                    adapterCreator: msg.guild.voiceAdapterCreator
+                    guildId: msg.guild.player.id,
+                    adapterCreator: msg.guild.player.voiceAdapterCreator
                 }).subscribe(msg.guild.player)
                 try{
                     maybeplaylist=argument.split("list=")[1].replace(" ", "")
@@ -84,21 +83,21 @@ client.on("messageCreate", async (msg)=>{
                     try{
                         ytlinkk=await searchyt(argument)
                         videoInfo = await ytdl.getInfo(ytlinkk)
-                        msg.guild.songqueue.push(ytlinkk)
-                        msg.guild.songtitlequeue.push(videoInfo.player_response.videoDetails.title)
+                        msg.guild.player.songqueue.push(ytlinkk)
+                        msg.guild.player.songtitlequeue.push(videoInfo.player_response.videoDetails.title)
                         
                     }catch{
                         msg.reply("No playable songs found.")
                         break;
                     }
                 }
-                if(msg.guild.playerstate){
+                if(msg.guild.player.playerstate){
                     msg.reply("Added to queue.")
                 }
                 else{
-                    msg.guild.playerstate=true
-                    playAudio(msg.guild.songqueue[msg.guild.currentsong])
-                    msg.reply("Playing: "+msg.guild.songtitlequeue[msg.guild.currentsong])
+                    msg.guild.player.playerstate=true
+                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong])
+                    msg.reply("Playing: "+msg.guild.player.songtitlequeue[msg.guild.player.currentsong])
                 }
             break;
             case "pause":
@@ -108,17 +107,17 @@ client.on("messageCreate", async (msg)=>{
                 msg.guild.player.unpause()
             break;
             case "queue":
-                if (msg.guild.songtitlequeue.length==0){
+                if (msg.guild.player.songtitlequeue.length==0){
                     msg.reply("Queue is empty. Add songs using the command `play`.")
                     break;
                 }
                 let queuestring=""
-                for(i=0; i<(msg.guild.songtitlequeue.length); i++){
-                    if(i==msg.guild.currentsong){
+                for(i=0; i<(msg.guild.player.songtitlequeue.length); i++){
+                    if(i==msg.guild.player.currentsong){
                         queuestring=queuestring+"**"
                     }
-                    queuestring=queuestring+(i+1)+". "+msg.guild.songtitlequeue[i]
-                    if(i==msg.guild.currentsong){
+                    queuestring=queuestring+(i+1)+". "+msg.guild.player.songtitlequeue[i]
+                    if(i==msg.guild.player.currentsong){
                         queuestring=queuestring+"**"
                     }
                     queuestring=queuestring+"\n"
@@ -126,40 +125,40 @@ client.on("messageCreate", async (msg)=>{
                 msg.reply(queuestring)
             break;
             case "clear":
-                msg.guild.playerstate=false
+                msg.guild.player.playerstate=false
                 msg.guild.player.stop()
-                msg.guild.songqueue=[]
-                msg.guild.songtitlequeue=[]
-                msg.guild.currentsong=0
-                msg.guild.playerstate=false
+                msg.guild.player.songqueue=[]
+                msg.guild.player.songtitlequeue=[]
+                msg.guild.player.currentsong=0
+                msg.guild.player.playerstate=false
             break;
             case "fuckoff":
                 try{
-                    msg.guild.playerstate=false
+                    msg.guild.player.playerstate=false
                     msg.guild.player.stop()
-                    msg.guild.songqueue=[]
-                    msg.guild.songtitlequeue=[]
-                    msg.guild.currentsong=0
+                    msg.guild.player.songqueue=[]
+                    msg.guild.player.songtitlequeue=[]
+                    msg.guild.player.currentsong=0
                     conn.destroy()
-                    msg.guild.playerstate=false
+                    msg.guild.player.playerstate=false
                 }catch{
                     msg.reply("Already fucking.")
                 }
             break;
             case "skip":
-                if ((msg.guild.currentsong+1)<msg.guild.songqueue.length){
-                    msg.guild.currentsong++
-                    playAudio(msg.guild.songqueue[msg.guild.currentsong])
-                    msg.reply("Playing: "+msg.guild.songtitlequeue[msg.guild.currentsong])
-                }else if(msg.guild.loopq){
-                    msg.guild.currentsong=0
-                    playAudio(msg.guild.songqueue[msg.guild.currentsong])
-                    msg.reply("Playing: "+msg.guild.songtitlequeue[msg.guild.currentsong])
+                if ((msg.guild.player.currentsong+1)<msg.guild.player.songqueue.length){
+                    msg.guild.player.currentsong++
+                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong])
+                    msg.reply("Playing: "+msg.guild.player.songtitlequeue[msg.guild.player.currentsong])
+                }else if(msg.guild.player.loopq){
+                    msg.guild.player.currentsong=0
+                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong])
+                    msg.reply("Playing: "+msg.guild.player.songtitlequeue[msg.guild.player.currentsong])
                 }
             break;
             case "loop":
-                msg.guild.loopq=!msg.guild.loopq
-                msg.reply("Loop: "+msg.guild.loopq)
+                msg.guild.player.loopq=!msg.guild.player.loopq
+                msg.reply("Loop: "+msg.guild.player.loopq)
             break;
             case "move":
                 tofromlist=argument.split(/ +/)
@@ -172,12 +171,12 @@ client.on("messageCreate", async (msg)=>{
                 try{
                     tofromlist[0]=parseInt(tofromlist[0])-1
                     tofromlist[1]=parseInt(tofromlist[1])-1
-                    placeholder=msg.guild.songqueue[tofromlist[0]]
-                    placetitleholder=msg.guild.songtitlequeue[tofromlist[0]]
-                    msg.guild.songqueue.splice(tofromlist[0], 1)
-                    msg.guild.songqueue.splice(tofromlist[1], 0, placeholder)
-                    msg.guild.songtitlequeue.splice(tofromlist[0], 1)
-                    msg.guild.songtitlequeue.splice(tofromlist[1], 0, placetitleholder)
+                    placeholder=msg.guild.player.songqueue[tofromlist[0]]
+                    placetitleholder=msg.guild.player.songtitlequeue[tofromlist[0]]
+                    msg.guild.player.songqueue.splice(tofromlist[0], 1)
+                    msg.guild.player.songqueue.splice(tofromlist[1], 0, placeholder)
+                    msg.guild.player.songtitlequeue.splice(tofromlist[0], 1)
+                    msg.guild.player.songtitlequeue.splice(tofromlist[1], 0, placetitleholder)
                     
                 }catch{
                     msg.reply("Command usage: move [number of track to be moved] [new position of track].")
@@ -191,11 +190,11 @@ client.on("messageCreate", async (msg)=>{
                 }catch{
                     break;
                 }
-                if (gotonum<msg.guild.songqueue.length){
-                    msg.guild.currentsong=gotonum
-                    msg.guild.playerstate=true
-                    playAudio(msg.guild.songqueue[msg.guild.currentsong])
-                    msg.reply("Playing: "+msg.guild.songtitlequeue[msg.guild.currentsong])
+                if (gotonum<msg.guild.player.songqueue.length){
+                    msg.guild.player.currentsong=gotonum
+                    msg.guild.player.playerstate=true
+                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong])
+                    msg.reply("Playing: "+msg.guild.player.songtitlequeue[msg.guild.player.currentsong])
                 }
             break;
             case "halp":
@@ -224,8 +223,8 @@ async function parseplaylist(arg){
     playlist=await search.GetPlaylistData(arg);
     playlistitems=playlist["items"]
     for(i=0; i<playlistitems.length; i++){
-        msg.guild.songqueue.push(playlistitems[i]["id"])
-        msg.guild.songtitlequeue.push(playlistitems[i]["title"])
+        msg.guild.player.songqueue.push(playlistitems[i]["id"])
+        msg.guild.player.songtitlequeue.push(playlistitems[i]["title"])
     }
 }
 client.login(token);
