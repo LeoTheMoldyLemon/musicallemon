@@ -26,7 +26,7 @@ client.on("messageCreate", async (msg)=>{
             msg.guild.currentsong=0
             msg.guild.playerstate=false
             msg.guild.loopq=false
-            const msg.guild.player = createAudioPlayer()
+            msg.guild.player = createAudioPlayer()
         }
         command=msg.content.substring(1).split(/ +/);
         argument=""
