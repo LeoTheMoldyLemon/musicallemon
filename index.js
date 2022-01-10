@@ -29,6 +29,7 @@ client.on("messageCreate", async (msg)=>{
             msg.guild.player.loopq=false
             
             msg.guild.player.on(AudioPlayerStatus.Idle, () => {
+                console.log("Player is idle.")
                 if(this.playerstate){
                     if ((this.currentsong+1)<this.songqueue.length){
                         this.currentsong++
