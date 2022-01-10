@@ -33,7 +33,7 @@ client.on("messageCreate", async (msg)=>{
                 console.log("Error player.", error);
             });
             playerrr=msg.guild.player
-            msg.guild.player.on(AudioPlayerStatus.Idle, playerEventHandler.bind(playerrr) )
+            
             playerEventHandler=function(){
                 console.log(playerrr);
             
@@ -59,7 +59,7 @@ client.on("messageCreate", async (msg)=>{
                 }
             };
             
-            
+            msg.guild.player.on(AudioPlayerStatus.Idle, playerEventHandler.bind(playerrr) )
             
             
             
