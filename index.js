@@ -13,7 +13,7 @@ client.on('ready', () => {
 });
 
 client.on('error', error => {
-    console.error('The WebSocket encountered an error:', error);
+    console.log('The WebSocket encountered an error:', error);
 });
 
 
@@ -29,7 +29,9 @@ client.on("messageCreate", async (msg)=>{
             msg.guild.player.currentsong=0
             msg.guild.player.playerstate=false
             msg.guild.player.loopq=false
-            
+            msg.guild.player.on('error', error => {
+                console.log("Error player.", error);
+            });
             msg.guild.player.on(AudioPlayerStatus.Idle, () => {
                 console.log("Player is idle.")
                 console.log(this.playerstate)
