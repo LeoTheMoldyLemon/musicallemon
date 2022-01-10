@@ -220,7 +220,7 @@ async function searchyt(term){
 async function playAudio(ytlink, playerr){
     let videoInfo=await ytdl.getInfo(ytlink)
     let audiostream = await ytdl(ytlink, {filter:"audioonly"})
-    let res = createAudioResource(audiostream);
+    let res = await createAudioResource(audiostream);
     playerr.play(res)
 }
 async function parseplaylist(arg){
