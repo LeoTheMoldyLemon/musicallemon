@@ -34,7 +34,7 @@ client.on("messageCreate", async (msg)=>{
             });
             msg.guild.player.on(AudioPlayerStatus.Idle, () => {
                 console.log("Player is idle.")
-                console.log(this.playerstate)
+                console.log(this)
                 
                 if(this.playerstate){
                     if ((this.currentsong+1)<this.songqueue.length){
@@ -226,7 +226,7 @@ async function searchyt(term){
 }
 async function playAudio(ytlink, playerr){
     let videoInfo=await ytdl.getInfo(ytlink)
-    let audiostream = await ytdl(ytlink, {filter:"audioonly"})
+    let audiostream = await ytdl(ytlink, {filter:"audioonly",highWaterMark:1<<25})
     let res = await createAudioResource(audiostream);
     playerr.play(res)
 }
