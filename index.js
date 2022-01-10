@@ -12,7 +12,9 @@ client.on('ready', () => {
 	console.log('Ready!');
 });
 
-
+client.on('error', error => {
+    console.error('The WebSocket encountered an error:', error);
+});
 
 
 
