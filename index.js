@@ -12,7 +12,6 @@ client.on('ready', () => {
 	console.log('Ready!');
 });
 
-const player = createAudioPlayer()
 
 
 
@@ -27,6 +26,7 @@ client.on("messageCreate", async (msg)=>{
             msg.guild.currentsong=0
             msg.guild.playerstate=false
             msg.guild.loopq=false
+            const msg.guild.player = createAudioPlayer()
         }
         command=msg.content.substring(1).split(/ +/);
         argument=""
@@ -49,7 +49,7 @@ client.on("messageCreate", async (msg)=>{
                     channelId: msg.member.voice.channel.id,
                     guildId: msg.guild.id,
                     adapterCreator: msg.guild.voiceAdapterCreator
-                }).subscribe(player)
+                }).subscribe(msg.guild.player)
                 try{
                     maybeplaylist=argument.split("list=")[1].replace(" ", "")
                     await parseplaylist(maybeplaylist)
@@ -76,10 +76,10 @@ client.on("messageCreate", async (msg)=>{
                 }
             break;
             case "pause":
-                player.pause()
+                msg.guild.player.pause()
             break;
             case "continue":
-                player.unpause()
+                msg.guild.player.unpause()
             break;
             case "queue":
                 if (msg.guild.songtitlequeue.length==0){
@@ -101,7 +101,7 @@ client.on("messageCreate", async (msg)=>{
             break;
             case "clear":
                 msg.guild.playerstate=false
-                player.stop()
+                msg.guild.player.stop()
                 msg.guild.songqueue=[]
                 msg.guild.songtitlequeue=[]
                 msg.guild.currentsong=0
@@ -110,7 +110,7 @@ client.on("messageCreate", async (msg)=>{
             case "fuckoff":
                 try{
                     msg.guild.playerstate=false
-                    player.stop()
+                    msg.guild.player.stop()
                     msg.guild.songqueue=[]
                     msg.guild.songtitlequeue=[]
                     msg.guild.currentsong=0
@@ -182,7 +182,7 @@ client.on("messageCreate", async (msg)=>{
         }
     }
 })
-player.on(AudioPlayerStatus.Idle, () => {
+msg.guild.player.on(AudioPlayerStatus.Idle, () => {
     if(msg.guild.playerstate){
         if ((msg.guild.currentsong+1)<msg.guild.songqueue.length){
             msg.guild.currentsong++
@@ -208,7 +208,7 @@ async function playAudio(ytlink){
     let videoInfo=await ytdl.getInfo(ytlink)
     let audiostream = await ytdl(ytlink, {filter:"audioonly"})
     let res = createAudioResource(audiostream);
-    player.play(res)
+    msg.guild.player.play(res)
 }
 async function parseplaylist(arg){
     playlist=await search.GetPlaylistData(arg);
