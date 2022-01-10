@@ -27,6 +27,32 @@ client.on("messageCreate", async (msg)=>{
             msg.guild.playerstate=false
             msg.guild.loopq=false
             msg.guild.player = createAudioPlayer()
+            
+            msg.guild.player.on(AudioPlayerStatus.Idle, () => {
+                if(msg.guild.playerstate){
+                    if ((msg.guild.currentsong+1)<msg.guild.songqueue.length){
+                        msg.guild.currentsong++
+                        playAudio(msg.guild.songqueue[msg.guild.currentsong])
+                    }else{
+                        if(msg.guild.loopq){
+                            msg.guild.currentsong=0
+                            playAudio(msg.guild.songqueue[msg.guild.currentsong])
+                            msg.reply("Playing: "+msg.guild.songtitlequeue[msg.guild.currentsong])
+                        }else{
+                            msg.guild.currentsong++
+                            msg.guild.playerstate=false
+                        }
+                    }
+                }
+            });
+            
+            
+            
+            
+            
+            
+            
+            
         }
         command=msg.content.substring(1).split(/ +/);
         argument=""
@@ -182,23 +208,7 @@ client.on("messageCreate", async (msg)=>{
         }
     }
 })
-msg.guild.player.on(AudioPlayerStatus.Idle, () => {
-    if(msg.guild.playerstate){
-        if ((msg.guild.currentsong+1)<msg.guild.songqueue.length){
-            msg.guild.currentsong++
-            playAudio(msg.guild.songqueue[msg.guild.currentsong])
-        }else{
-            if(msg.guild.loopq){
-                msg.guild.currentsong=0
-                playAudio(msg.guild.songqueue[msg.guild.currentsong])
-                msg.reply("Playing: "+msg.guild.songtitlequeue[msg.guild.currentsong])
-            }else{
-                msg.guild.currentsong++
-                msg.guild.playerstate=false
-            }
-        }
-    }
-});
+
 
 async function searchyt(term){
     thingy= await search.GetListByKeyword(term)
