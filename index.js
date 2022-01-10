@@ -66,15 +66,18 @@ client.on("messageCreate", async (msg)=>{
                 msg.reply(argument)
             break;
             case "play":
+                console.log("CHECK1")
                 if (!msg.member.voice.channel){
                     msg.reply("You must be in a voice channel.")
                     break;
                 }
+                console.log("CHECK2")
                 conn=joinVoiceChannel({
                     channelId: msg.member.voice.channel.id,
                     guildId: msg.guild.player.id,
                     adapterCreator: msg.guild.player.voiceAdapterCreator
                 }).subscribe(msg.guild.player)
+                console.log("CHECK3")
                 try{
                     maybeplaylist=argument.split("list=")[1].replace(" ", "")
                     await parseplaylist(maybeplaylist)
@@ -91,6 +94,7 @@ client.on("messageCreate", async (msg)=>{
                         break;
                     }
                 }
+                console.log("CHECK4")
                 if(msg.guild.player.playerstate){
                     msg.reply("Added to queue.")
                 }
