@@ -20,7 +20,7 @@ client.on("messageCreate", async (msg)=>{
     console.log("Message received from, msg: "+msg.content)
     console.log("Server: "+msg.guild.name)
     if (msg.content[0]=="$"){
-        if(msg.guild.playera === undefined){
+        if(msg.guild.player === undefined){
             msg.guild.player = createAudioPlayer()
             msg.guild.player.songqueue=[]
             msg.guild.player.songtitlequeue=[]
