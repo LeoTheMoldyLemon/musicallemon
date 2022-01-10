@@ -32,11 +32,11 @@ client.on("messageCreate", async (msg)=>{
                 if(this.playerstate){
                     if ((this.currentsong+1)<this.songqueue.length){
                         this.currentsong++
-                        playAudio(this.songqueue[this.currentsong])
+                        playAudio(this.songqueue[this.currentsong], this)
                     }else{
                         if(this.loopq){
                             this.currentsong=0
-                            playAudio(this.songqueue[this.currentsong])
+                            playAudio(this.songqueue[this.currentsong], this)
                         }else{
                             this.currentsong++
                             this.playerstate=false
@@ -100,7 +100,7 @@ client.on("messageCreate", async (msg)=>{
                 }
                 else{
                     msg.guild.player.playerstate=true
-                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong])
+                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong], msg.guild.player)
                     msg.reply("Playing: "+msg.guild.player.songtitlequeue[msg.guild.player.currentsong])
                 }
             break;
@@ -152,11 +152,11 @@ client.on("messageCreate", async (msg)=>{
             case "skip":
                 if ((msg.guild.player.currentsong+1)<msg.guild.player.songqueue.length){
                     msg.guild.player.currentsong++
-                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong])
+                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong], msg.guild.player)
                     msg.reply("Playing: "+msg.guild.player.songtitlequeue[msg.guild.player.currentsong])
                 }else if(msg.guild.player.loopq){
                     msg.guild.player.currentsong=0
-                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong])
+                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong], msg.guild.player)
                     msg.reply("Playing: "+msg.guild.player.songtitlequeue[msg.guild.player.currentsong])
                 }
             break;
@@ -197,7 +197,7 @@ client.on("messageCreate", async (msg)=>{
                 if (gotonum<msg.guild.player.songqueue.length){
                     msg.guild.player.currentsong=gotonum
                     msg.guild.player.playerstate=true
-                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong])
+                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong], msg.guild.player)
                     msg.reply("Playing: "+msg.guild.player.songtitlequeue[msg.guild.player.currentsong])
                 }
             break;
@@ -217,11 +217,11 @@ async function searchyt(term){
     thingy= await search.GetListByKeyword(term)
     return thingy["items"][0]["id"]
 }
-async function playAudio(ytlink){
+async function playAudio(ytlink, playerr){
     let videoInfo=await ytdl.getInfo(ytlink)
     let audiostream = await ytdl(ytlink, {filter:"audioonly"})
     let res = createAudioResource(audiostream);
-    msg.guild.player.play(res)
+    playerr.play(res)
 }
 async function parseplaylist(arg){
     playlist=await search.GetPlaylistData(arg);
