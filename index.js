@@ -74,7 +74,7 @@ client.on("messageCreate", async (msg)=>{
                 console.log("CHECK2")
                 conn=joinVoiceChannel({
                     channelId: msg.member.voice.channel.id,
-                    guildId: msg.guild.player.id,
+                    guildId: msg.guild.id,
                     adapterCreator: msg.guild.player.voiceAdapterCreator
                 }).subscribe(msg.guild.player)
                 console.log("CHECK3")
