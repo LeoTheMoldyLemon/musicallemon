@@ -1,7 +1,7 @@
 
 const discord = require('discord.js');
 const { join } = require('path');
-const token="ODg4NTA3NTI4MDc2NDYwMDQz.YUTtHg.iuS8xtXraf9Brx-WOTQbvqx0lGg";
+const token="ODg4NTA3NTI4MDc2NDYwMDQz.YUTtHg.ozyANh0ou-OH9zH8V6ESMMftQgI";
 const intents = new discord.Intents(4737);
 const ytdl = require('ytdl-core');
 const client = new discord.Client({ intents });
@@ -13,14 +13,20 @@ client.on('ready', () => {
 });
 
 const player = createAudioPlayer()
-songqueue=[]
-songtitlequeue=[]
-currentsong=0
-playerstate=false
-loopq=false
+
+
+
+
 client.on("messageCreate", async (msg)=>{
     console.log("Message received, msg: "+msg.content)
     if (msg.content[0]=="$"){
+        if(msg.server.songqueue === undefined){
+            msg.server.songqueue=[]
+            msg.server.songtitlequeue=[]
+            msg.server.currentsong=0
+            msg.server.playerstate=false
+            msg.server.loopq=false
+        }
         command=msg.content.substring(1).split(/ +/);
         argument=""
         for(i=1; i<(command.length); i++){
@@ -51,21 +57,21 @@ client.on("messageCreate", async (msg)=>{
                     try{
                         ytlinkk=await searchyt(argument)
                         videoInfo = await ytdl.getInfo(ytlinkk)
-                        songqueue.push(ytlinkk)
-                        songtitlequeue.push(videoInfo.player_response.videoDetails.title)
+                        msg.server.songqueue.push(ytlinkk)
+                        msg.server.songtitlequeue.push(videoInfo.player_response.videoDetails.title)
                         
                     }catch{
                         msg.reply("No playable songs found.")
                         break;
                     }
                 }
-                if(playerstate){
+                if(msg.server.playerstate){
                     msg.reply("Added to queue.")
                 }
                 else{
-                    playerstate=true
-                    playAudio(songqueue[currentsong])
-                    msg.reply("Playing: "+songtitlequeue[currentsong])
+                    msg.server.playerstate=true
+                    playAudio(msg.server.songqueue[msg.server.currentsong])
+                    msg.reply("Playing: "+msg.server.songtitlequeue[msg.server.currentsong])
                 }
             break;
             case "pause":
@@ -75,17 +81,17 @@ client.on("messageCreate", async (msg)=>{
                 player.unpause()
             break;
             case "queue":
-                if (songtitlequeue.length==0){
+                if (msg.server.songtitlequeue.length==0){
                     msg.reply("Queue is empty. Add songs using the command `play`.")
                     break;
                 }
                 let queuestring=""
-                for(i=0; i<(songtitlequeue.length); i++){
-                    if(i==currentsong){
+                for(i=0; i<(msg.server.songtitlequeue.length); i++){
+                    if(i==msg.server.currentsong){
                         queuestring=queuestring+"**"
                     }
-                    queuestring=queuestring+(i+1)+". "+songtitlequeue[i]
-                    if(i==currentsong){
+                    queuestring=queuestring+(i+1)+". "+msg.server.songtitlequeue[i]
+                    if(i==msg.server.currentsong){
                         queuestring=queuestring+"**"
                     }
                     queuestring=queuestring+"\n"
@@ -93,40 +99,40 @@ client.on("messageCreate", async (msg)=>{
                 msg.reply(queuestring)
             break;
             case "clear":
-                playerstate=false
+                msg.server.playerstate=false
                 player.stop()
-                songqueue=[]
-                songtitlequeue=[]
-                currentsong=0
-                playerstate=false
+                msg.server.songqueue=[]
+                msg.server.songtitlequeue=[]
+                msg.server.currentsong=0
+                msg.server.playerstate=false
             break;
             case "fuckoff":
                 try{
-                    playerstate=false
+                    msg.server.playerstate=false
                     player.stop()
-                    songqueue=[]
-                    songtitlequeue=[]
-                    currentsong=0
+                    msg.server.songqueue=[]
+                    msg.server.songtitlequeue=[]
+                    msg.server.currentsong=0
                     conn.destroy()
-                    playerstate=false
+                    msg.server.playerstate=false
                 }catch{
                     msg.reply("Already fucking.")
                 }
             break;
             case "skip":
-                if ((currentsong+1)<songqueue.length){
-                    currentsong++
-                    playAudio(songqueue[currentsong])
-                    msg.reply("Playing: "+songtitlequeue[currentsong])
-                }else if(loopq){
-                    currentsong=0
-                    playAudio(songqueue[currentsong])
-                    msg.reply("Playing: "+songtitlequeue[currentsong])
+                if ((msg.server.currentsong+1)<msg.server.songqueue.length){
+                    msg.server.currentsong++
+                    playAudio(msg.server.songqueue[msg.server.currentsong])
+                    msg.reply("Playing: "+msg.server.songtitlequeue[msg.server.currentsong])
+                }else if(msg.server.loopq){
+                    msg.server.currentsong=0
+                    playAudio(msg.server.songqueue[msg.server.currentsong])
+                    msg.reply("Playing: "+msg.server.songtitlequeue[msg.server.currentsong])
                 }
             break;
             case "loop":
-                loopq=!loopq
-                msg.reply("Loop: "+loopq)
+                msg.server.loopq=!msg.server.loopq
+                msg.reply("Loop: "+msg.server.loopq)
             break;
             case "move":
                 tofromlist=argument.split(/ +/)
@@ -139,12 +145,12 @@ client.on("messageCreate", async (msg)=>{
                 try{
                     tofromlist[0]=parseInt(tofromlist[0])-1
                     tofromlist[1]=parseInt(tofromlist[1])-1
-                    placeholder=songqueue[tofromlist[0]]
-                    placetitleholder=songtitlequeue[tofromlist[0]]
-                    songqueue.splice(tofromlist[0], 1)
-                    songqueue.splice(tofromlist[1], 0, placeholder)
-                    songtitlequeue.splice(tofromlist[0], 1)
-                    songtitlequeue.splice(tofromlist[1], 0, placetitleholder)
+                    placeholder=msg.server.songqueue[tofromlist[0]]
+                    placetitleholder=msg.server.songtitlequeue[tofromlist[0]]
+                    msg.server.songqueue.splice(tofromlist[0], 1)
+                    msg.server.songqueue.splice(tofromlist[1], 0, placeholder)
+                    msg.server.songtitlequeue.splice(tofromlist[0], 1)
+                    msg.server.songtitlequeue.splice(tofromlist[1], 0, placetitleholder)
                     
                 }catch{
                     msg.reply("Command usage: move [number of track to be moved] [new position of track].")
@@ -158,11 +164,11 @@ client.on("messageCreate", async (msg)=>{
                 }catch{
                     break;
                 }
-                if (gotonum<songqueue.length){
-                    currentsong=gotonum
-                    playerstate=true
-                    playAudio(songqueue[currentsong])
-                    msg.reply("Playing: "+songtitlequeue[currentsong])
+                if (gotonum<msg.server.songqueue.length){
+                    msg.server.currentsong=gotonum
+                    msg.server.playerstate=true
+                    playAudio(msg.server.songqueue[msg.server.currentsong])
+                    msg.reply("Playing: "+msg.server.songtitlequeue[msg.server.currentsong])
                 }
             break;
             case "halp":
@@ -176,18 +182,18 @@ client.on("messageCreate", async (msg)=>{
     }
 })
 player.on(AudioPlayerStatus.Idle, () => {
-    if(playerstate){
-        if ((currentsong+1)<songqueue.length){
-            currentsong++
-            playAudio(songqueue[currentsong])
+    if(msg.server.playerstate){
+        if ((msg.server.currentsong+1)<msg.server.songqueue.length){
+            msg.server.currentsong++
+            playAudio(msg.server.songqueue[msg.server.currentsong])
         }else{
-            if(loopq){
-                currentsong=0
-                playAudio(songqueue[currentsong])
-                msg.reply("Playing: "+songtitlequeue[currentsong])
+            if(msg.server.loopq){
+                msg.server.currentsong=0
+                playAudio(msg.server.songqueue[msg.server.currentsong])
+                msg.reply("Playing: "+msg.server.songtitlequeue[msg.server.currentsong])
             }else{
-                currentsong++
-                playerstate=false
+                msg.server.currentsong++
+                msg.server.playerstate=false
             }
         }
     }
@@ -207,8 +213,8 @@ async function parseplaylist(arg){
     playlist=await search.GetPlaylistData(arg);
     playlistitems=playlist["items"]
     for(i=0; i<playlistitems.length; i++){
-        songqueue.push(playlistitems[i]["id"])
-        songtitlequeue.push(playlistitems[i]["title"])
+        msg.server.songqueue.push(playlistitems[i]["id"])
+        msg.server.songtitlequeue.push(playlistitems[i]["title"])
     }
 }
 client.login(token);
