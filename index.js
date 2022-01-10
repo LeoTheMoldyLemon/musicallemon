@@ -90,7 +90,8 @@ client.on("messageCreate", async (msg)=>{
                     channelId: msg.member.voice.channel.id,
                     guildId: msg.guild.id,
                     adapterCreator: msg.guild.voiceAdapterCreator
-                }).subscribe(msg.guild.player)
+                })
+                conn.subscribe(msg.guild.player)
                 console.log("CHECK3")
                 try{
                     maybeplaylist=argument.split("list=")[1].replace(" ", "")
