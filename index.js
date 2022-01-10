@@ -32,6 +32,7 @@ client.on("messageCreate", async (msg)=>{
             msg.guild.player.on('error', error => {
                 console.log("Error player.", error);
             });
+            console.log(msg.guild.player)
             msg.guild.player.on(AudioPlayerStatus.Idle, () => {
                 console.log("Player is idle.")
                 console.log(this)
