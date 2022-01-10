@@ -18,7 +18,8 @@ const player = createAudioPlayer()
 
 
 client.on("messageCreate", async (msg)=>{
-    console.log("Message received, msg: "+msg.content)
+    console.log("Message received from, msg: "+msg.content)
+    console.log("Server: "+msg.server)
     if (msg.content[0]=="$"){
         if(msg.server.songqueue === undefined){
             msg.server.songqueue=[]
