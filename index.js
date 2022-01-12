@@ -226,8 +226,8 @@ client.on("messageCreate", async (msg)=>{
                         msg.guild.player.currentsong=0
                         msg.guild.player.playerstate=false
                     }else{
-                        msg.guild.player.songqueue.splice(argument, 1)
-                        msg.guild.player.songtitlequeuequeue.splice(argument, 1)
+                        msg.guild.player.songqueue.splice(parseInt(argument), 1)
+                        msg.guild.player.songtitlequeuequeue.splice(parseInt(argument), 1)
                         if(argument<msg.guild.player.currentsong){
                             currentsong--
                         }else if(argument==msg.guild.player.currentsong){
