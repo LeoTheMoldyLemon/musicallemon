@@ -235,8 +235,9 @@ client.on("messageCreate", async (msg)=>{
                         }
                     }
                         
-                }catch{
+                }catch(e){
                     msg.reply("I don't feel like it.")
+                    console.log(e)
                 }
             break;
             case "halp":
