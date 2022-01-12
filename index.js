@@ -218,8 +218,6 @@ client.on("messageCreate", async (msg)=>{
             break;
             case "remove":
                 try{
-                    msg.guild.player.songqueue.splice(argument, 1)
-                    msg.guild.player.songtitlequeuequeue.splice(argument, 1)
                     if(msg.guild.player.songqueue.length==1){
                         msg.guild.player.playerstate=false
                         msg.guild.player.stop()
@@ -228,6 +226,8 @@ client.on("messageCreate", async (msg)=>{
                         msg.guild.player.currentsong=0
                         msg.guild.player.playerstate=false
                     }else{
+                        msg.guild.player.songqueue.splice(argument, 1)
+                        msg.guild.player.songtitlequeuequeue.splice(argument, 1)
                         if(argument<msg.guild.player.currentsong){
                             currentsong--
                         }else if(argument==msg.guild.player.currentsong){
@@ -238,6 +238,7 @@ client.on("messageCreate", async (msg)=>{
                 }catch{
                     msg.reply("I don't feel like it.")
                 }
+            break;
             case "halp":
                 msg.reply("This bot plays youtube music (or any video) in voice channels.\nCommands: \n`say` Replies to your message with what you told it to say.\n`play` Joins your voice channel and play the selected song or add it at the end of the queue. This command supports links, search querys and playlists.\n`pause` Pauses the current song.\n`continue` Unpauses.\n`queue` Displays songs in the queue.\n`clear` Clears queue and stops playing.\n`fuckoff` Fucks off.\n`goto` Plays the number of the song you entered.\n`move` Moves a song to a selected position in the queue.\n`skip` Skips to the next song in the queue.\n`loop` Toggles looping the queue.\n`remove` Removes the selected song.")
             break;
