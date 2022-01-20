@@ -94,10 +94,25 @@ client.on("messageCreate", async (msg)=>{
                 conn.subscribe(msg.guild.player)
                 console.log("CHECK3")
                 try{
-                    maybeplaylist=argument.split("list=")[1].replace(" ", "")
-                    await parseplaylist(maybeplaylist)
                     
-                }catch{
+                    
+                    maybeplaylist=argument.replace(" ", "").replace("&", "=").replace("?", "=").split("=")
+                    console.log(maybeplaylist)
+                    checker=true
+                    for(i=0; i<maybeplaylist.length; i++){
+                        if(maybeplaylist[i]=="list"){
+                            await parseplaylist(maybeplaylist[i+1], msg)
+                            console.log(maybeplaylist[i+1])
+                            checker=false
+                            break
+                        }
+                    }
+                    if(checker){
+                        a=asdfjo()
+                    }
+                    
+                }catch (error){
+                    console.error(error)
                     try{
                         ytlinkk=await searchyt(argument)
                         videoInfo = await ytdl.getInfo(ytlinkk)
@@ -141,7 +156,11 @@ client.on("messageCreate", async (msg)=>{
                     }
                     queuestring=queuestring+"\n"
                 }
-                msg.reply(queuestring)
+                try{
+                    await msg.reply(queuestring)
+                }catch{
+                    msg.reply("Too many songs, trying to print will crash the bot. Still adding a working page-thing for the queue.")
+                }
             break;
             case "clear":
                 msg.guild.player.playerstate=false
@@ -205,7 +224,7 @@ client.on("messageCreate", async (msg)=>{
             break;
             case "goto":
                 try{
-                    gotonum=parseInt(argument)
+                    gotonum=parseInt(argument)-1
                 }catch{
                     break;
                 }
@@ -263,9 +282,10 @@ async function playAudio(ytlink, playerr){
     let res = await createAudioResource(audiostream);
     playerr.play(res)
 }
-async function parseplaylist(arg){
+async function parseplaylist(arg, msg){
     playlist=await search.GetPlaylistData(arg);
     playlistitems=playlist["items"]
+    console.log(playlistitems)
     for(i=0; i<playlistitems.length; i++){
         msg.guild.player.songqueue.push(playlistitems[i]["id"])
         msg.guild.player.songtitlequeue.push(playlistitems[i]["title"])
