@@ -22,7 +22,7 @@ client.on("messageCreate", async (msg)=>{
     console.log("Message received from, msg: "+msg.content)
     console.log("Server: "+msg.guild.name)
     if (msg.content[0]=="$"){
-        if(msg.member.voice.channel===undefined){
+        if(!msg.member.voice.channel){
             msg.reply("Sorry, you have to be in a voice channel to talk to me.")
         }else{
             if(msg.member.voice.channel.player === undefined){
