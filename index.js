@@ -19,7 +19,7 @@ client.on('error', error => {
 
 
 client.on("messageCreate", async (msg)=>{
-    console.log(msg)
+    console.log(msg.channel)
     console.log("Message received from, msg: "+msg.content)
     console.log("Server: "+msg.guild.name)
     if (msg.content[0]=="$"){
