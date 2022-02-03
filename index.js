@@ -135,11 +135,11 @@ client.on("messageCreate", async (msg)=>{
             case "download":
                 for(i=0; i<msg.guild.player.songqueue.length; i++){
                     try{
-                        let audiostream = await ytdl(msg.guild.player.songqueue[i], {filter:"audioonly",highWaterMark:1<<25})
+                        let audiostream = await ytdl(msg.guild.player.songqueue[i], {filter:"audioonly",highWaterMark:1<<25}).pipe(fs.createWriteStream('song.wav'));
                         console.log(audiostream)
                         msg.channel.send("File "+String(i+1)+":",
                         {files: [{
-                                    attachment:audiostream,
+                                    attachment:'song.wav',
                                     name: msg.guild.player.songtitlequeue[i]+".wav"
                                 }]
                     })}catch(e){
