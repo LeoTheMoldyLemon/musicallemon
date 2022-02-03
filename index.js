@@ -136,11 +136,13 @@ client.on("messageCreate", async (msg)=>{
             break;
             case "download":
                 for(i=0; i<msg.guild.player.songqueue.length; i++){
-                    try{msg.channel.send(
-                    {files: [{
-                                        attachment: await ytdl(msg.guild.player.songqueue[i], {filter:"audioonly",highWaterMark:1<<25}),
-                                        name: msg.guild.player.songtitlequeue[i]
-                                      }]
+                    try{
+                        
+                        msg.channel.send("File "+String(i)+":",
+                        {files: [{
+                                    attachment: await ytdl(msg.guild.player.songqueue[i], {filter:"audioonly",highWaterMark:1<<25}),
+                                    name: msg.guild.player.songtitlequeue[i]+".wav"
+                                }]
                     })}catch(e){
                         console.log(e)
                         msg.reply("Failed to download "+msg.guild.player.songtitlequeue[i])
