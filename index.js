@@ -251,7 +251,16 @@ client.on("messageCreate", async (msg)=>{
                         if((parseInt(argument)-1)<msg.guild.player.currentsong){
                             msg.guild.player.currentsong--
                         }else if((parseInt(argument)-1)==msg.guild.player.currentsong){
-                            playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong], msg.guild.player)
+                            try{
+                                playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong], msg.guild.player)
+                            }catch{
+                                if(loop){
+                                    msg.guild.player.currentsong=0
+                                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong], msg.guild.player)
+                                }else{
+                                    msg.reply("Queue ended.")
+                                }
+                            }
                         }
                     }
                         
