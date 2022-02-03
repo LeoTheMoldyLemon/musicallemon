@@ -140,7 +140,8 @@ client.on("messageCreate", async (msg)=>{
                         msg.channel.send("File "+String(i+1)+":",
                             {files: [{
                                         attachment:'song.wav',
-                                        name: msg.guild.player.songtitlequeue[i]+".wav"
+                                        name: msg.guild.player.songtitlequeue[i]+".wav",
+                                        file: "song.wav"
                                     }]
                             }
                         )})
