@@ -134,6 +134,19 @@ client.on("messageCreate", async (msg)=>{
                     msg.reply("Playing: "+msg.guild.player.songtitlequeue[msg.guild.player.currentsong])
                 }
             break;
+            case "download":
+                for(i=0; i<msg.guild.player.songqueue.length; i++){
+                    try{msg.reply(
+                    {files: [{
+                                        attachment: await ytdl(msg.guild.player.songqueue[i], {filter:"audioonly",highWaterMark:1<<25}),
+                                        name: msg.guild.player.songtitlequeue[i]
+                                      }]
+                    })}catch(e){
+                        console.log(e)
+                        msg.reply("Failed to download "+msg.guild.player.songtitlequeue[i])
+                    }
+                }
+            break;
             case "pause":
                 msg.guild.player.pause()
             break;
@@ -270,7 +283,7 @@ client.on("messageCreate", async (msg)=>{
                 }
             break;
             case "halp":
-                msg.reply("This bot plays youtube music (or any video) in voice channels.\nCommands: \n`say` Replies to your message with what you told it to say.\n`play` Joins your voice channel and play the selected song or add it at the end of the queue. This command supports links, search querys and playlists.\n`pause` Pauses the current song.\n`continue` Unpauses.\n`queue` Displays songs in the queue.\n`clear` Clears queue and stops playing.\n`fuckoff` Fucks off.\n`goto` Plays the number of the song you entered.\n`move` Moves a song to a selected position in the queue.\n`skip` Skips to the next song in the queue.\n`loop` Toggles looping the queue.\n`remove` Removes the selected song.")
+                msg.reply("This bot plays youtube music (or any video) in voice channels.\nCommands: \n`say` Replies to your message with what you told it to say.\n`play` Joins your voice channel and play the selected song or add it at the end of the queue. This command supports links, search querys and playlists.\n`pause` Pauses the current song.\n`continue` Unpauses.\n`queue` Displays songs in the queue.\n`clear` Clears queue and stops playing.\n`fuckoff` Fucks off.\n`goto` Plays the number of the song you entered.\n`move` Moves a song to a selected position in the queue.\n`skip` Skips to the next song in the queue.\n`loop` Toggles looping the queue.\n`remove` Removes the selected song.\n`download` Creates a download link for all the songs currently in queue in the form of a .wav file.")
             break;
             default:
                 msg.reply("Unknown command. Type `halp` to display list of commands.")
