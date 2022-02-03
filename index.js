@@ -1,4 +1,3 @@
-
 const discord = require('discord.js');
 const { join } = require('path');
 const token="ODg4NTA3NTI4MDc2NDYwMDQz.YUTtHg.iuS8xtXraf9Brx-WOTQbvqx0lGg";
@@ -237,8 +236,7 @@ client.on("messageCreate", async (msg)=>{
                 }
             break;
             case "remove":
-			msg.reply("This doesnt work rn, ill get around to fixing it... one day.")
-               /* try{
+                try{
                     if(msg.guild.player.songqueue.length==1){
                         msg.guild.player.playerstate=false
                         msg.guild.player.stop()
@@ -250,9 +248,9 @@ client.on("messageCreate", async (msg)=>{
                         console.log(argument)
                         msg.guild.player.songqueue.splice(parseInt(argument)-1, 1)
                         msg.guild.player.songtitlequeue.splice(parseInt(argument)-1, 1)
-                        if(argument<msg.guild.player.currentsong){
-                            currentsong--
-                        }else if(argument==msg.guild.player.currentsong){
+                        if(parseInt(argument)<msg.guild.player.currentsong){
+                            msg.guild.player.currentsong--
+                        }else if(parseInt(argument)==msg.guild.player.currentsong){
                             playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong], msg.guild.player)
                         }
                     }
@@ -260,7 +258,7 @@ client.on("messageCreate", async (msg)=>{
                 }catch(e){
                     msg.reply("I don't feel like it.")
                     console.log(e)
-                }*/
+                }
             break;
             case "halp":
                 msg.reply("This bot plays youtube music (or any video) in voice channels.\nCommands: \n`say` Replies to your message with what you told it to say.\n`play` Joins your voice channel and play the selected song or add it at the end of the queue. This command supports links, search querys and playlists.\n`pause` Pauses the current song.\n`continue` Unpauses.\n`queue` Displays songs in the queue.\n`clear` Clears queue and stops playing.\n`fuckoff` Fucks off.\n`goto` Plays the number of the song you entered.\n`move` Moves a song to a selected position in the queue.\n`skip` Skips to the next song in the queue.\n`loop` Toggles looping the queue.\n`remove` Removes the selected song.")
