@@ -136,13 +136,15 @@ client.on("messageCreate", async (msg)=>{
                 for(i=0; i<msg.guild.player.songqueue.length; i++){
                     try{
                         let audiostream = await ytdl(msg.guild.player.songqueue[i], {filter:"audioonly",highWaterMark:1<<25}).pipe(fs.createWriteStream('song.wav'));
-                        console.log(audiostream)
+                        audiostream.on("finish", ()=>{
                         msg.channel.send("File "+String(i+1)+":",
-                        {files: [{
-                                    attachment:'song.wav',
-                                    name: msg.guild.player.songtitlequeue[i]+".wav"
-                                }]
-                    })}catch(e){
+                            {files: [{
+                                        attachment:'song.wav',
+                                        name: msg.guild.player.songtitlequeue[i]+".wav"
+                                    }]
+                            }
+                        )})
+                    }catch(e){
                         console.log(e)
                         msg.reply("Failed to download "+msg.guild.player.songtitlequeue[i])
                     }
