@@ -248,9 +248,9 @@ client.on("messageCreate", async (msg)=>{
                         console.log(argument)
                         msg.guild.player.songqueue.splice(parseInt(argument)-1, 1)
                         msg.guild.player.songtitlequeue.splice(parseInt(argument)-1, 1)
-                        if((parseInt(argument)-)<msg.guild.player.currentsong){
+                        if((parseInt(argument)-1)<msg.guild.player.currentsong){
                             msg.guild.player.currentsong--
-                        }else if((parseInt(argument)-)==msg.guild.player.currentsong){
+                        }else if((parseInt(argument)-1)==msg.guild.player.currentsong){
                             playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong], msg.guild.player)
                         }
                     }
