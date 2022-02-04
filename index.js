@@ -18,7 +18,7 @@ client.on('error', error => {
 
 
 client.on("messageCreate", async (msg)=>{
-    console.log("Message received from "+msg.author.name+", msg: "+msg.content)
+    console.log("Message received from "+msg.author.username+", msg: "+msg.content)
     console.log("Server: "+msg.guild.name)
     if (msg.content[0]=="$"){
         if(msg.guild.player === undefined){
