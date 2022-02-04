@@ -135,8 +135,9 @@ client.on("messageCreate", async (msg)=>{
             case "download":
                 for(i=0; i<msg.guild.player.songqueue.length; i++){
                     try{
-                        
-                        let result = await streamToString(await ytdl(msg.guild.player.songqueue[i], {filter:"audioonly",highWaterMark:1<<25}))
+                        let stream=await ytdl(msg.guild.player.songqueue[i], {filter:"audioonly",highWaterMark:1<<25})
+                        let result = await streamToString(stream)
+			console.log(result)
                         msg.channel.send("File "+String(i+1)+":",
                             {files: [{
                                         attachment:result,
