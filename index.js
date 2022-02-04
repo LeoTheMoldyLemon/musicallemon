@@ -136,15 +136,14 @@ client.on("messageCreate", async (msg)=>{
                 for(i=0; i<msg.guild.player.songqueue.length; i++){
                     try{
                         let audiostream = await ytdl(msg.guild.player.songqueue[i], {filter:"audioonly",highWaterMark:1<<25}).pipe(fs.createWriteStream('song.wav'));
-                        audiostream.on("finish", ()=>{
+                        let result = await streamToString(audiostream)
                         msg.channel.send("File "+String(i+1)+":",
                             {files: [{
-                                        attachment:'song.wav',
+                                        attachment:result,
                                         name: msg.guild.player.songtitlequeue[i]+".wav",
-                                        file: "song.wav"
                                     }]
                             }
-                        )})
+                        )
                     }catch(e){
                         console.log(e)
                         msg.reply("Failed to download "+msg.guild.player.songtitlequeue[i])
@@ -316,5 +315,13 @@ async function parseplaylist(arg, msg){
         msg.guild.player.songqueue.push(playlistitems[i]["id"])
         msg.guild.player.songtitlequeue.push(playlistitems[i]["title"])
     }
+}
+function streamToString (stream) {
+  const chunks = [];
+  return new Promise((resolve, reject) => {
+    stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+    stream.on('error', (err) => reject(err));
+    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+  })
 }
 client.login(token);
