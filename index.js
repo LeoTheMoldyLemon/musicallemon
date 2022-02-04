@@ -136,7 +136,7 @@ client.on("messageCreate", async (msg)=>{
                 for(i=0; i<msg.guild.player.songqueue.length; i++){
                     try{
                         
-                        let result = await streamToString(ytdl(msg.guild.player.songqueue[i], {filter:"audioonly",highWaterMark:1<<25}))
+                        let result = await streamToString(await ytdl(msg.guild.player.songqueue[i], {filter:"audioonly",highWaterMark:1<<25}))
                         msg.channel.send("File "+String(i+1)+":",
                             {files: [{
                                         attachment:result,
