@@ -136,10 +136,11 @@ client.on("messageCreate", async (msg)=>{
                 for(i=0; i<msg.guild.player.songqueue.length; i++){
                     try{
                         let stream=await ytdl(msg.guild.player.songqueue[i], {filter:"audioonly",highWaterMark:1<<25})
+						console.log(stream)
                         msg.channel.send({
 							content: "File "+String(i+1)+":",
                             files: [{
-                                        attachment:stream,
+                       	                attachment:stream,
                                         name: msg.guild.player.songtitlequeue[i]+".wav",
                                     }]
                             }
