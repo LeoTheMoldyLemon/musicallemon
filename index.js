@@ -1,6 +1,6 @@
 const discord = require('discord.js');
 const { join } = require('path');
-const token="ODg4NTA3NTI4MDc2NDYwMDQz.YUTtHg.iuS8xtXraf9Brx-WOTQbvqx0lGg";
+const token="OTcxMTE1OTEzNDcyNTEyMDcy.YnF0LA.EXxP08Kau7bexL6Y3DZoNemU5xQ";
 const intents = new discord.Intents(4737);
 const ytdl = require('ytdl-core');
 const client = new discord.Client({ intents });
@@ -112,14 +112,25 @@ client.on("messageCreate", async (msg)=>{
                 }catch (error){
                     console.error(error)
                     try{
-                        ytlinkk=await searchyt(argument)
-                        videoInfo = await ytdl.getInfo(ytlinkk)
-                        msg.guild.player.songqueue.push(ytlinkk)
+                        
+                        videoInfo = await ytdl.getInfo(argument)
+                        
+                        msg.guild.player.songqueue.push(argument)
                         msg.guild.player.songtitlequeue.push(videoInfo.player_response.videoDetails.title)
                         
-                    }catch{
-                        msg.reply("No playable songs found.")
-                        break;
+                    }catch(error){
+                        console.log("NOT A LINK")
+                        console.error(error)
+                        try{
+                            ytlinkk=await searchyt(argument)
+                            videoInfo = await ytdl.getInfo(ytlinkk)
+                            msg.guild.player.songqueue.push(ytlinkk)
+                            msg.guild.player.songtitlequeue.push(videoInfo.player_response.videoDetails.title)
+                            
+                        }catch{
+                            msg.reply("No playable songs found.")
+                            break;
+                        }
                     }
                 }
                 console.log("CHECK4")
@@ -186,6 +197,7 @@ client.on("messageCreate", async (msg)=>{
                 msg.guild.player.songtitlequeue=[]
                 msg.guild.player.currentsong=0
                 msg.guild.player.playerstate=false
+                msg.guild.player.loopq=false
             break;
             case "fuckoff":
                 try{
@@ -194,6 +206,7 @@ client.on("messageCreate", async (msg)=>{
                     msg.guild.player.songqueue=[]
                     msg.guild.player.songtitlequeue=[]
                     msg.guild.player.currentsong=0
+                    msg.guild.player.loopq=false
                     conn.destroy()
                     msg.guild.player.playerstate=false
                 }catch{
@@ -212,8 +225,8 @@ client.on("messageCreate", async (msg)=>{
                 }
             break;
             case "loop":
-                msg.guild.player.loopq=!msg.guild.player.loopq
-                msg.reply("Loop: "+msg.guild.player.loopq)
+                msg.guild.player.loopq=true
+                msg.reply("Loop activated. Clear to deactivate.")
             break;
             case "move":
                 tofromlist=argument.split(/ +/)
@@ -252,6 +265,9 @@ client.on("messageCreate", async (msg)=>{
                     msg.reply("Playing: "+msg.guild.player.songtitlequeue[msg.guild.player.currentsong])
                 }
             break;
+            case "die":
+                crash()
+            break;
             case "remove":
                 try{
                     if(msg.guild.player.songqueue.length==1){
@@ -287,7 +303,7 @@ client.on("messageCreate", async (msg)=>{
                 }
             break;
             case "halp":
-                msg.reply("This bot plays youtube music (or any video) in voice channels.\nCommands: \n`say` Replies to your message with what you told it to say.\n`play` Joins your voice channel and play the selected song or add it at the end of the queue. This command supports links, search querys and playlists.\n`pause` Pauses the current song.\n`continue` Unpauses.\n`queue` Displays songs in the queue.\n`clear` Clears queue and stops playing.\n`fuckoff` Fucks off.\n`goto` Plays the number of the song you entered.\n`move` Moves a song to a selected position in the queue.\n`skip` Skips to the next song in the queue.\n`loop` Toggles looping the queue.\n`remove` Removes the selected song.\n`download` Creates a download link for all the songs currently in queue in the form of a .wav file.")
+                msg.reply("This bot plays youtube music (or any youtube video) in voice channels.\nCommands: \n`say` Replies to your message with what you told it to say.\n`play` Joins your voice channel and plays the selected song or adds it at the end of the queue. This command supports links, search queries and playlists.\n`pause` Pauses the current song.\n`continue` Unpauses.\n`queue` Displays the songs currently in queue.\n`clear` Clears queue and stops playing.\n`fuckoff` Fucks off.\n`goto` Plays the number of the song you entered.\n`move` Moves a song to a selected position in the queue eg. `$move 2 7` would move song from position 2 to position 7.\n`skip` Skips to the next song in the queue.\n`loop` Toggles looping the queue.\n`remove` Removes the selected song. eg. \n`download` Creates a download link for all the songs currently in queue in the form of a .wav file.\n `die` If something doesn't work, use this. Crashes the bot.")
             break;
             default:
                 msg.reply("Unknown command. Type `halp` to display list of commands.")
