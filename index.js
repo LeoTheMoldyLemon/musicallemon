@@ -302,8 +302,24 @@ client.on("messageCreate", async (msg)=>{
                     console.log(e)
                 }
             break;
+	    	case "preset":
+				maybeplaylist="https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf"
+				console.log(maybeplaylist)
+                    checker=true
+                    for(i=0; i<maybeplaylist.length; i++){
+                        if(maybeplaylist[i]=="list"){
+                            await parseplaylist(maybeplaylist[i+1], msg)
+                            console.log(maybeplaylist[i+1])
+                            checker=false
+                            break
+                        }
+                    }
+                    if(checker){
+                        a=asdfjo()
+                    }
+            break;
             case "halp":
-                msg.reply("This bot plays youtube music (or any youtube video) in voice channels.\nCommands: \n`say` Replies to your message with what you told it to say.\n`play` Joins your voice channel and plays the selected song or adds it at the end of the queue. This command supports links, search queries and playlists.\n`pause` Pauses the current song.\n`continue` Unpauses.\n`queue` Displays the songs currently in queue.\n`clear` Clears queue and stops playing.\n`fuckoff` Fucks off.\n`goto` Plays the number of the song you entered.\n`move` Moves a song to a selected position in the queue eg. `$move 2 7` would move song from position 2 to position 7.\n`skip` Skips to the next song in the queue.\n`loop` Toggles looping the queue.\n`remove` Removes the selected song. eg. \n`download` Creates a download link for all the songs currently in queue in the form of a .wav file.\n `die` If something doesn't work, use this. Crashes the bot.")
+                msg.reply("This bot plays youtube music (or any youtube video) in voice channels.\nCommands: \n`say` Replies to your message with what you told it to say.\n`play` Joins your voice channel and plays the selected song or adds it at the end of the queue. This command supports links, search queries and playlists.\n`pause` Pauses the current song.\n`continue` Unpauses.\n`queue` Displays the songs currently in queue.\n`clear` Clears queue and stops playing.\n`fuckoff` Fucks off.\n`goto` Plays the number of the song you entered.\n`move` Moves a song to a selected position in the queue eg. `$move 2 7` would move song from position 2 to position 7.\n`skip` Skips to the next song in the queue.\n`loop` Toggles looping the queue.\n`remove` Removes the selected song. eg. \n`download` Creates a download link for all the songs currently in queue in the form of a .wav file.\n `die` If something doesn't work, use this. Crashes the bot.\n `preset` replaces the current playlist with this preset one: https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf .")
             break;
             default:
                 msg.reply("Unknown command. Type `halp` to display list of commands.")
