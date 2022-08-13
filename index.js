@@ -303,21 +303,42 @@ client.on("messageCreate", async (msg)=>{
                 }
             break;
 	    	case "preset":
-					msg.reply("Playing preset playlist. Link: https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf")
-					maybeplaylist="https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf".replace(" ", "").replace("&", "=").replace("?", "=").split("=")
-                    console.log(maybeplaylist)
-                    checker=true
-                    for(i=0; i<maybeplaylist.length; i++){
-                        if(maybeplaylist[i]=="list"){
-                            await parseplaylist(maybeplaylist[i+1], msg)
-                            console.log(maybeplaylist[i+1])
-                            checker=false
-                            break
-                        }
-                    }
-                    if(checker){
-                        msg.reply("Failed... somehow?")
-                    }
+				console.log("CHECK1")
+                if (!msg.member.voice.channel){
+                    msg.reply("You must be in a voice channel.")
+                    break;
+                }
+                console.log("CHECK2")
+                conn=joinVoiceChannel({
+                    channelId: msg.member.voice.channel.id,
+                    guildId: msg.guild.id,
+                    adapterCreator: msg.guild.voiceAdapterCreator
+                })
+                conn.subscribe(msg.guild.player)
+                console.log("CHECK3")
+				msg.reply("Playing preset playlist. Link: https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf")
+				maybeplaylist="https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf".replace(" ", "").replace("&", "=").replace("?", "=").split("=")
+				console.log(maybeplaylist)
+				checker=true
+				for(i=0; i<maybeplaylist.length; i++){
+					if(maybeplaylist[i]=="list"){
+						await parseplaylist(maybeplaylist[i+1], msg)
+						console.log(maybeplaylist[i+1])
+						checker=false
+						break
+					}
+				}
+				if(checker){
+					msg.reply("Failed... somehow?")
+				}
+				if(msg.guild.player.playerstate){
+                    msg.reply("Added to queue.")
+                }
+                else{
+                    msg.guild.player.playerstate=true
+                    playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong], msg.guild.player)
+                    msg.reply("Playing: "+msg.guild.player.songtitlequeue[msg.guild.player.currentsong])
+                }
             break;
             case "halp":
                 msg.reply("This bot plays youtube music (or any youtube video) in voice channels.\nCommands: \n`say` Replies to your message with what you told it to say.\n`play` Joins your voice channel and plays the selected song or adds it at the end of the queue. This command supports links, search queries and playlists.\n`pause` Pauses the current song.\n`continue` Unpauses.\n`queue` Displays the songs currently in queue.\n`clear` Clears queue and stops playing.\n`fuckoff` Fucks off.\n`goto` Plays the number of the song you entered.\n`move` Moves a song to a selected position in the queue eg. `$move 2 7` would move song from position 2 to position 7.\n`skip` Skips to the next song in the queue.\n`loop` Toggles looping the queue.\n`remove` Removes the selected song. eg. \n`download` Creates a download link for all the songs currently in queue in the form of a .wav file.\n `die` If something doesn't work, use this. Crashes the bot.\n `preset` replaces the current playlist with this preset one: https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf .")
