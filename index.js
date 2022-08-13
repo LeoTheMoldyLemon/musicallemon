@@ -303,8 +303,9 @@ client.on("messageCreate", async (msg)=>{
                 }
             break;
 	    	case "preset":
-				maybeplaylist="https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf"
-				console.log(maybeplaylist)
+					msg.reply("Playing preset playlist. Link: https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf")
+					maybeplaylist="https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf".replace(" ", "").replace("&", "=").replace("?", "=").split("=")
+                    console.log(maybeplaylist)
                     checker=true
                     for(i=0; i<maybeplaylist.length; i++){
                         if(maybeplaylist[i]=="list"){
@@ -315,7 +316,7 @@ client.on("messageCreate", async (msg)=>{
                         }
                     }
                     if(checker){
-                        a=asdfjo()
+                        msg.reply("Failed... somehow?")
                     }
             break;
             case "halp":
