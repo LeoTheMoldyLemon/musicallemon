@@ -303,6 +303,13 @@ client.on("messageCreate", async (msg)=>{
                 }
             break;
 	    	case "preset":
+                msg.guild.player.playerstate=false
+                msg.guild.player.stop()
+                msg.guild.player.songqueue=[]
+                msg.guild.player.songtitlequeue=[]
+                msg.guild.player.currentsong=0
+                msg.guild.player.playerstate=false
+                msg.guild.player.loopq=false
 				console.log("CHECK1")
                 if (!msg.member.voice.channel){
                     msg.reply("You must be in a voice channel.")
