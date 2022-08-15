@@ -77,6 +77,7 @@ client.on("messageCreate", async (msg)=>{
             case "say":
                 msg.reply(argument)
             break;
+			case "p":
             case "play":
                 console.log("CHECK1")
                 if (!msg.member.voice.channel){
@@ -168,6 +169,7 @@ client.on("messageCreate", async (msg)=>{
             case "continue":
                 msg.guild.player.unpause()
             break;
+			case "q":
             case "queue":
                 if (msg.guild.player.songtitlequeue.length==0){
                     msg.reply("Queue is empty. Add songs using the command `play`.")
