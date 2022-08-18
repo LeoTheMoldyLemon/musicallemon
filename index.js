@@ -18,10 +18,9 @@ client.on('error', error => {
 
 
 client.on("messageCreate", async (msg)=>{
+    console.log("["+msg.guild.name+"] "+msg.author.username+": "+msg.content)
 
     if (msg.content[0]=="$"){
-	    console.log("["+msg.guild.name+"] "+msg.author.username+": "+msg.content)
-
         if(msg.guild.player === undefined){
             msg.guild.player = createAudioPlayer()
             msg.guild.player.songqueue=[]
@@ -87,12 +86,12 @@ client.on("messageCreate", async (msg)=>{
                     break;
                 }
 
-                conn=joinVoiceChannel({
+                msg.guild.conn=joinVoiceChannel({
                     channelId: msg.member.voice.channel.id,
                     guildId: msg.guild.id,
                     adapterCreator: msg.guild.voiceAdapterCreator
                 })
-                conn.subscribe(msg.guild.player)
+                msg.guild.conn.subscribe(msg.guild.player)
                 try{
                     
                     
@@ -210,7 +209,7 @@ client.on("messageCreate", async (msg)=>{
                     msg.guild.player.songtitlequeue=[]
                     msg.guild.player.currentsong=0
                     msg.guild.player.loopq=false
-                    conn.destroy()
+                    msg.guild.conn.destroy()
                     msg.guild.player.playerstate=false
                 }catch{
                     msg.reply("Already fucking.")
@@ -319,12 +318,12 @@ client.on("messageCreate", async (msg)=>{
                     break;
                 }
 
-                conn=joinVoiceChannel({
+                msg.guild.conn=joinVoiceChannel({
                     channelId: msg.member.voice.channel.id,
                     guildId: msg.guild.id,
                     adapterCreator: msg.guild.voiceAdapterCreator
                 })
-                conn.subscribe(msg.guild.player)
+                msg.guild.conn.subscribe(msg.guild.player)
 				msg.reply("Playing preset playlist. Link: https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf")
 				maybeplaylist="https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf".replace(" ", "").replace("&", "=").replace("?", "=").split("=")
 				checker=true
