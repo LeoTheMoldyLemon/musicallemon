@@ -18,8 +18,8 @@ client.on('error', error => {
 
 
 client.on("messageCreate", async (msg)=>{
-    console.log("Message received from "+msg.author.username+", msg: "+msg.content)
-    console.log("Server: "+msg.guild.name)
+    console.log("["msg.guild.name"]"+"Message received from "+msg.author.username+", msg: "+msg.content)
+
     if (msg.content[0]=="$"){
         if(msg.guild.player === undefined){
             msg.guild.player = createAudioPlayer()
@@ -29,7 +29,7 @@ client.on("messageCreate", async (msg)=>{
             msg.guild.player.playerstate=false
             msg.guild.player.loopq=false
             msg.guild.player.on('error', error => {
-                console.log("Error player.", error);
+                console.log("["msg.guild.name"]"+"Error player:", error);
             });
             playerrr=msg.guild.player
             
@@ -39,7 +39,7 @@ client.on("messageCreate", async (msg)=>{
             
             
             
-                console.log("Player is idle.")
+                console.log("["msg.guild.name"]"+"Player is idle.")
                 
                 if(this.playerstate){
                     if ((this.currentsong+1)<this.songqueue.length){
@@ -79,29 +79,28 @@ client.on("messageCreate", async (msg)=>{
             break;
 			case "p":
             case "play":
-                console.log("CHECK1")
+                console.log("["msg.guild.name"]"+"Attempting to play a song.")
                 if (!msg.member.voice.channel){
                     msg.reply("You must be in a voice channel.")
+					console.log("["msg.guild.name"]"+"User wasn't in voice channel.")
                     break;
                 }
-                console.log("CHECK2")
+
                 conn=joinVoiceChannel({
                     channelId: msg.member.voice.channel.id,
                     guildId: msg.guild.id,
                     adapterCreator: msg.guild.voiceAdapterCreator
                 })
                 conn.subscribe(msg.guild.player)
-                console.log("CHECK3")
                 try{
                     
                     
                     maybeplaylist=argument.replace(" ", "").replace("&", "=").replace("?", "=").split("=")
-                    console.log(maybeplaylist)
+                    console.log("["msg.guild.name"]"+"Checkin if it's a playlist.")
                     checker=true
                     for(i=0; i<maybeplaylist.length; i++){
                         if(maybeplaylist[i]=="list"){
                             await parseplaylist(maybeplaylist[i+1], msg)
-                            console.log(maybeplaylist[i+1])
                             checker=false
                             break
                         }
@@ -111,7 +110,7 @@ client.on("messageCreate", async (msg)=>{
                     }
                     
                 }catch (error){
-                    console.error(error)
+                    console.log("["msg.guild.name"]"+"Checking if it's a link.")
                     try{
                         
                         videoInfo = await ytdl.getInfo(argument)
@@ -120,7 +119,7 @@ client.on("messageCreate", async (msg)=>{
                         msg.guild.player.songtitlequeue.push(videoInfo.player_response.videoDetails.title)
                         
                     }catch(error){
-                        console.log("NOT A LINK")
+                        console.log("["msg.guild.name"]"+"Using youtube's search engine.")
                         console.error(error)
                         try{
                             ytlinkk=await searchyt(argument)
@@ -130,11 +129,12 @@ client.on("messageCreate", async (msg)=>{
                             
                         }catch{
                             msg.reply("No playable songs found.")
+							console.log("["msg.guild.name"]"+"Search engine returned nothing.")
                             break;
                         }
                     }
                 }
-                console.log("CHECK4")
+				console.log("["msg.guild.name"]"+"Playing song.")
                 if(msg.guild.player.playerstate){
                     msg.reply("Added to queue.")
                 }
@@ -232,8 +232,8 @@ client.on("messageCreate", async (msg)=>{
             break;
             case "move":
                 tofromlist=argument.split(/ +/)
-                console.log(argument)
-                console.log(tofromlist)
+                console.log("["msg.guild.name"]"+"Attempting to move song.")
+
                 if(tofromlist.length!=2){
                     msg.reply("Command usage: move [number of track to be moved] [new position of track]")
                     break;
@@ -280,7 +280,7 @@ client.on("messageCreate", async (msg)=>{
                         msg.guild.player.currentsong=0
                         msg.guild.player.playerstate=false
                     }else{
-                        console.log(argument)
+                        console.log("["msg.guild.name"]"+"Attempting to remove song.")
                         msg.guild.player.songqueue.splice(parseInt(argument)-1, 1)
                         msg.guild.player.songtitlequeue.splice(parseInt(argument)-1, 1)
                         if((parseInt(argument)-1)<msg.guild.player.currentsong){
@@ -312,27 +312,24 @@ client.on("messageCreate", async (msg)=>{
                 msg.guild.player.currentsong=0
                 msg.guild.player.playerstate=false
                 msg.guild.player.loopq=false
-				console.log("CHECK1")
+				console.log("Attempting to play preset.")
                 if (!msg.member.voice.channel){
                     msg.reply("You must be in a voice channel.")
                     break;
                 }
-                console.log("CHECK2")
+
                 conn=joinVoiceChannel({
                     channelId: msg.member.voice.channel.id,
                     guildId: msg.guild.id,
                     adapterCreator: msg.guild.voiceAdapterCreator
                 })
                 conn.subscribe(msg.guild.player)
-                console.log("CHECK3")
 				msg.reply("Playing preset playlist. Link: https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf")
 				maybeplaylist="https://www.youtube.com/playlist?list=PLxDvibNajH61yTpWe0LzE-O5e-BuE8bMf".replace(" ", "").replace("&", "=").replace("?", "=").split("=")
-				console.log(maybeplaylist)
 				checker=true
 				for(i=0; i<maybeplaylist.length; i++){
 					if(maybeplaylist[i]=="list"){
 						await parseplaylist(maybeplaylist[i+1], msg)
-						console.log(maybeplaylist[i+1])
 						checker=false
 						break
 					}
@@ -374,18 +371,18 @@ async function playAudio(ytlink, playerr){
 async function parseplaylist(arg, msg){
     playlist=await search.GetPlaylistData(arg);
     playlistitems=playlist["items"]
-    console.log(playlistitems)
+    console.log("Parsing a playlist.")
     for(i=0; i<playlistitems.length; i++){
         msg.guild.player.songqueue.push(playlistitems[i]["id"])
         msg.guild.player.songtitlequeue.push(playlistitems[i]["title"])
     }
 }
-function streamToString (stream) {
+/*function streamToString (stream) {
   const chunks = [];
   return new Promise((resolve, reject) => {
     stream.on('data', (chunk) => {console.log("receiving chunk"); chunks.push(Buffer.from(chunk))});
     stream.on('error', (err) => reject(err));
     stream.on('end', () => {console.log("resovled"); resolve(Buffer.concat(chunks))});
   })
-}
+}*/
 client.login(token);
