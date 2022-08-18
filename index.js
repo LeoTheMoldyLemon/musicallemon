@@ -18,7 +18,7 @@ client.on('error', error => {
 
 
 client.on("messageCreate", async (msg)=>{
-    console.log("["msg.guild.name"]"+"Message received from "+msg.author.username+", msg: "+msg.content)
+    console.log("["+msg.guild.name+"] "+msg.author.username+": "+msg.content)
 
     if (msg.content[0]=="$"){
         if(msg.guild.player === undefined){
@@ -29,7 +29,7 @@ client.on("messageCreate", async (msg)=>{
             msg.guild.player.playerstate=false
             msg.guild.player.loopq=false
             msg.guild.player.on('error', error => {
-                console.log("["msg.guild.name"]"+"Error player:", error);
+                console.log("["+msg.guild.name+"]"+"Error player:", error);
             });
             playerrr=msg.guild.player
             
@@ -39,7 +39,7 @@ client.on("messageCreate", async (msg)=>{
             
             
             
-                console.log("["msg.guild.name"]"+"Player is idle.")
+                console.log("["+msg.guild.name+"]"+"Player is idle.")
                 
                 if(this.playerstate){
                     if ((this.currentsong+1)<this.songqueue.length){
@@ -79,10 +79,10 @@ client.on("messageCreate", async (msg)=>{
             break;
 			case "p":
             case "play":
-                console.log("["msg.guild.name"]"+"Attempting to play a song.")
+                console.log("["+msg.guild.name+"]"+"Attempting to play a song.")
                 if (!msg.member.voice.channel){
                     msg.reply("You must be in a voice channel.")
-					console.log("["msg.guild.name"]"+"User wasn't in voice channel.")
+					console.log("["+msg.guild.name+"]"+"User wasn't in voice channel.")
                     break;
                 }
 
@@ -96,7 +96,7 @@ client.on("messageCreate", async (msg)=>{
                     
                     
                     maybeplaylist=argument.replace(" ", "").replace("&", "=").replace("?", "=").split("=")
-                    console.log("["msg.guild.name"]"+"Checkin if it's a playlist.")
+                    console.log("["+msg.guild.name+"]"+"Checkin if it's a playlist.")
                     checker=true
                     for(i=0; i<maybeplaylist.length; i++){
                         if(maybeplaylist[i]=="list"){
@@ -110,7 +110,7 @@ client.on("messageCreate", async (msg)=>{
                     }
                     
                 }catch (error){
-                    console.log("["msg.guild.name"]"+"Checking if it's a link.")
+                    console.log("["+msg.guild.name+"]"+"Checking if it's a link.")
                     try{
                         
                         videoInfo = await ytdl.getInfo(argument)
@@ -119,7 +119,7 @@ client.on("messageCreate", async (msg)=>{
                         msg.guild.player.songtitlequeue.push(videoInfo.player_response.videoDetails.title)
                         
                     }catch(error){
-                        console.log("["msg.guild.name"]"+"Using youtube's search engine.")
+                        console.log("["+msg.guild.name+"]"+"Using youtube's search engine.")
                         console.error(error)
                         try{
                             ytlinkk=await searchyt(argument)
@@ -129,12 +129,12 @@ client.on("messageCreate", async (msg)=>{
                             
                         }catch{
                             msg.reply("No playable songs found.")
-							console.log("["msg.guild.name"]"+"Search engine returned nothing.")
+							console.log("["+msg.guild.name+"]"+"Search engine returned nothing.")
                             break;
                         }
                     }
                 }
-				console.log("["msg.guild.name"]"+"Playing song.")
+				console.log("["+msg.guild.name+"]"+"Playing song.")
                 if(msg.guild.player.playerstate){
                     msg.reply("Added to queue.")
                 }
@@ -232,7 +232,7 @@ client.on("messageCreate", async (msg)=>{
             break;
             case "move":
                 tofromlist=argument.split(/ +/)
-                console.log("["msg.guild.name"]"+"Attempting to move song.")
+                console.log("["+msg.guild.name+"]"+"Attempting to move song.")
 
                 if(tofromlist.length!=2){
                     msg.reply("Command usage: move [number of track to be moved] [new position of track]")
@@ -280,7 +280,7 @@ client.on("messageCreate", async (msg)=>{
                         msg.guild.player.currentsong=0
                         msg.guild.player.playerstate=false
                     }else{
-                        console.log("["msg.guild.name"]"+"Attempting to remove song.")
+                        console.log("["+msg.guild.name+"]"+"Attempting to remove song.")
                         msg.guild.player.songqueue.splice(parseInt(argument)-1, 1)
                         msg.guild.player.songtitlequeue.splice(parseInt(argument)-1, 1)
                         if((parseInt(argument)-1)<msg.guild.player.currentsong){
