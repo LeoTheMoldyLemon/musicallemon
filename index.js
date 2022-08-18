@@ -18,9 +18,10 @@ client.on('error', error => {
 
 
 client.on("messageCreate", async (msg)=>{
-    console.log("["+msg.guild.name+"] "+msg.author.username+": "+msg.content)
 
     if (msg.content[0]=="$"){
+	    console.log("["+msg.guild.name+"] "+msg.author.username+": "+msg.content)
+
         if(msg.guild.player === undefined){
             msg.guild.player = createAudioPlayer()
             msg.guild.player.songqueue=[]
