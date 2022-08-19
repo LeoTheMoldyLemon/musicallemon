@@ -30,8 +30,10 @@ client.on("messageCreate", async (msg)=>{
             msg.guild.player.loopq=false
             msg.guild.player.on('error', error => {
                 console.log("["+msg.guild.name+"]"+"Error player:", error);
+				msg.channel.send("403 player error. Blocked by YouTube for like half a second for some reason. Attempting to restart song.")
+				playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong], msg.guild.player)
             });
-            playerrr=msg.guild.player
+            let playerrr=msg.guild.player
             
             playerEventHandler=function(){
             
@@ -148,7 +150,6 @@ client.on("messageCreate", async (msg)=>{
                 for(i=0; i<msg.guild.player.songqueue.length; i++){
                     try{
                         let stream=await ytdl(msg.guild.player.songqueue[i], {filter:"audioonly",highWaterMark:1<<25})
-						console.log(stream)
                         msg.channel.send({
 							content: "File "+String(i+1)+":",
                             files: [{
@@ -363,10 +364,18 @@ async function searchyt(term){
     return thingy["items"][0]["id"]
 }
 async function playAudio(ytlink, playerr){
-    let videoInfo=await ytdl.getInfo(ytlink)
-    let audiostream = await ytdl(ytlink, {filter:"audioonly",highWaterMark:1<<25})
-    let res = await createAudioResource(audiostream);
-    playerr.play(res)
+	try{
+		let videoInfo=await ytdl.getInfo(ytlink)
+		let audiostream = await ytdl(ytlink, {filter:"audioonly",highWaterMark:1<<25})
+		let res = await createAudioResource(audiostream);
+		playerr.play(res)
+	}catch(e){
+		console.error(e)
+		let videoInfo=await ytdl.getInfo(ytlink)
+		let audiostream = await ytdl(ytlink, {filter:"audioonly",highWaterMark:1<<25})
+		let res = await createAudioResource(audiostream);
+		playerr.play(res)
+	}
 }
 async function parseplaylist(arg, msg){
     playlist=await search.GetPlaylistData(arg);
