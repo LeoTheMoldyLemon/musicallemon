@@ -32,6 +32,7 @@ client.on("messageCreate", async (msg)=>{
                 console.log("["+msg.guild.name+"]"+"Error player:", error);
 				msg.channel.send("403 player error. Blocked by YouTube for like half a second for some reason. Attempting to restart song.")
 				playAudio(msg.guild.player.songqueue[msg.guild.player.currentsong], msg.guild.player)
+				console.log(msg.guild.player.currentsong);
             });
             let playerrr=msg.guild.player
             
@@ -370,6 +371,7 @@ async function playAudio(ytlink, playerr){
 		let res = await createAudioResource(audiostream);
 		playerr.play(res)
 	}catch(e){
+		console.log("Player error on audio play, kms")
 		console.error(e)
 		let videoInfo=await ytdl.getInfo(ytlink)
 		let audiostream = await ytdl(ytlink, {filter:"audioonly",highWaterMark:1<<25})
