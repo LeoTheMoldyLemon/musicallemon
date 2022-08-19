@@ -30,7 +30,6 @@ client.on("messageCreate", async (msg)=>{
             msg.guild.player.loopq=false
             msg.guild.player.on('error', error => {
                 console.log("["+msg.guild.name+"]"+"Error player:", error);
-				msg.channel.send("403 player error. Blocked by YouTube for like half a second for some reason. Attempting to restart song.")
 				msg.guild.player.currentsong--
             });
             let playerrr=msg.guild.player
