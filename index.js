@@ -128,7 +128,9 @@ client.on("messageCreate", async (msg)=>{
                             msg.guild.player.songqueue.push(ytlinkk)
                             msg.guild.player.songtitlequeue.push(videoInfo.player_response.videoDetails.title)
                             
-                        }catch{
+                        }catch(e){
+							console.log("THE ERROR AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+							console.log(e)
                             msg.reply("No playable songs found. Either you entered something that isn't on youtube or something is very wrong with the bot. Use `$die` to restart the bot and contact @LeoTheLemon#8456.")
 							console.log("["+msg.guild.name+"]"+"Search engine returned nothing.")
                             break;
