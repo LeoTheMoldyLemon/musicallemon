@@ -129,7 +129,7 @@ client.on("messageCreate", async (msg)=>{
                             msg.guild.player.songtitlequeue.push(videoInfo.player_response.videoDetails.title)
                             
                         }catch{
-                            msg.reply("No playable songs found.")
+                            msg.reply("No playable songs found. Either you entered something that isn't on youtube or something is very wrong with the bot. Use `$die` to restart the bot and contact @LeoTheLemon#8456.")
 							console.log("["+msg.guild.name+"]"+"Search engine returned nothing.")
                             break;
                         }
